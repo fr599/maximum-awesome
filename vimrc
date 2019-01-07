@@ -58,6 +58,8 @@ noremap <C-h> <C-w>h
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
+nnoremap <C-[> :tabprevious<CR>
+nnoremap <C-]> :tabnext<CR>
 noremap <leader>l :Align
 nnoremap <leader>a :Ag<space>
 nnoremap <leader>b :CtrlPBuffer<CR>
