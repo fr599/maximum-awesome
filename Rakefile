@@ -141,6 +141,38 @@ namespace :install do
     end
   end
 
+  desc 'Install Postman'
+  task :postman do
+    step 'postman'
+    unless app? 'Postman'
+      brew_cask_install 'postman'
+    end
+  end
+
+  desc 'Install Stats'
+  task :stats do
+    step 'stats'
+    unless app? 'Stats'
+      brew_cask_install 'stats'
+    end
+  end
+
+  desc 'Install VS Code'
+  task :vscode do
+    step 'vscode'
+    unless app? 'Visual Studio Code'
+      brew_cask_install 'vscode'
+    end
+  end
+
+  desc 'Install Caffeine'
+  task :caffeine do
+    step 'caffeine'
+    unless app? 'Caffeine'
+      brew_cask_install 'caffeine'
+    end
+  end
+
   desc 'Install ctags'
   task :ctags do
     step 'ctags'
@@ -153,6 +185,12 @@ namespace :install do
     brew_install 'reattach-to-user-namespace'
   end
 
+  desc 'Install tree'
+  task :tree do
+    step 'tree'
+    brew_install 'tree'
+  end
+  
   desc 'Install tmux'
   task :tmux do
     step 'tmux'
@@ -195,6 +233,54 @@ exec /Applications/MacVim.app/Contents/MacOS/Vim "$@"
     install_github_bundle 'VundleVim','Vundle.vim'
     sh '~/bin/vim -c "PluginInstall!" -c "q" -c "q"'
   end
+  
+  desc 'Install Oh-My-ZSH'
+  task :omz do
+    step 'omz'
+    unless File.exist? File.expand_path("~/.oh-my-zsh")
+      sh 'sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
+    end
+  end
+  
+  # Install OMZ plugins / themes
+  desc 'Install Powerlevel10k'
+  task :p10k do
+    step 'p10k'
+    unless File.exist? File.expand_path("~/.p10k.zsh")
+      sh 'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k'
+    end
+  end
+
+  desc 'Install fzf'
+  task :fzf do
+    step 'fzf'
+    brew_install 'fzf'
+  end
+
+  desc 'Install zsh-autosuggestions'
+  task :zsh_autosuggestions do
+    step 'zsh-autosuggestions'
+    unless File.exist? File.expand_path("~/.oh-my-zsh/custom/plugins/zsh-autosuggestions")
+      sh 'git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
+    end
+  end
+
+  desc 'Install zsh-syntax-highlighting'
+  task :zsh_syntax_highlighting do
+    step 'zhs-syntax-highlighting'
+    unless File.exist? File.expand_path("~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting")
+      sh 'git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'
+    end
+  end
+
+  desc 'Install vscode-plugin'
+  task :zsh_vscode do
+    step 'zsh-vscode'
+    unless File.exist? File.expand_path("~/.oh-my-zsh/custom/plugins/vscode")
+      sh 'git clone https://github.com/valentinocossar/vscode.git ~/.oh-my-zsh/custom/plugins/vscode'
+    end
+    puts "Usage found here- https://github.com/valentinocossar/vscode#usage"
+  end
 end
 
 def filemap(map)
@@ -204,17 +290,25 @@ def filemap(map)
   end.freeze
 end
 
-COPIED_FILES = filemap(
-  'vimrc.local'         => '~/.vimrc.local',
-  'vimrc.bundles.local' => '~/.vimrc.bundles.local',
-  'tmux.conf.local'     => '~/.tmux.conf.local'
-)
+# COPIED_FILES = filemap(
+#   'dot-files/vimrc.local'          => '~/.vimrc.local',
+#   'dot-files/vimrc.bundles.local'  => '~/.vimrc.bundles.local',
+#   'dot-files/tmux.conf.local'      => '~/.tmux.conf.local',
+# )
 
 LINKED_FILES = filemap(
-  'vim'           => '~/.vim',
-  'tmux.conf'     => '~/.tmux.conf',
-  'vimrc'         => '~/.vimrc',
-  'vimrc.bundles' => '~/.vimrc.bundles'
+  'vim'                                         => '~/.vim',
+  'tmux.conf'                                   => '~/.tmux.conf',
+  'vimrc'                                       => '~/.vimrc',
+  'vimrc.bundles'                               => '~/.vimrc.bundles',
+  'dot-files/vimrc.local'                       => '~/.vimrc.local',
+  'dot-files/vimrc.bundles.local'               => '~/.vimrc.bundles.local',
+  'dot-files/tmux.conf.local'                   => '~/.tmux.conf.local',
+  'dot-files/p10k.zsh'                          => '~/.p10k.zsh',
+  'dot-files/omz/custom/plugins.zsh'            => '~/.oh-my-zsh/custom/plugins.zsh',
+  'dot-files/omz/custom/alias.zsh'              => '~/.oh-my-zsh/custom/alias.zsh',
+  'dot-files/omz/custom/functions.zsh'          => '~/.oh-my-zsh/custom/functions.zsh',
+  'dot-files/omz/lib/directories.zsh'           => '~/.oh-my-zsh/lib/directories.zsh'
 )
 
 desc 'Install these config files.'
@@ -225,7 +319,19 @@ task :install do
   Rake::Task['install:ctags'].invoke
   Rake::Task['install:reattach_to_user_namespace'].invoke
   Rake::Task['install:tmux'].invoke
+  Rake::Task['install:tree'].invoke
+  Rake::Task['install:omz'].invoke
+  Rake::Task['install:p10k'].invoke
+  Rake::Task['install:fzf'].invoke
+  Rake::Task['install:zsh_autosuggestions'].invoke
+  Rake::Task['install:zsh_syntax_highlighting'].invoke
+  Rake::Task['install:zsh_vscode'].invoke
+
   Rake::Task['install:macvim'].invoke
+  Rake::Task['install:postman'].invoke
+  Rake::Task['install:stats'].invoke
+  Rake::Task['install:vscode'].invoke
+  Rake::Task['install:caffeine'].invoke
 
   # TODO install gem ctags?
   # TODO run gem ctags?
@@ -236,9 +342,9 @@ task :install do
     link_file orig, link
   end
 
-  COPIED_FILES.each do |orig, copy|
-    cp orig, copy, :verbose => true unless File.exist?(copy)
-  end
+  # COPIED_FILES.each do |orig, copy|
+  #   cp orig, copy, :verbose => true unless File.exist?(copy)
+  # end
 
   # Install Vundle and bundles
   Rake::Task['install:vundle'].invoke

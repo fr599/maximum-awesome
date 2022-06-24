@@ -31,3 +31,34 @@ function! s:RemoveConflictingAlignMaps()
 endfunction
 command! -nargs=0 RemoveConflictingAlignMaps call s:RemoveConflictingAlignMaps()
 silent! autocmd VimEnter * RemoveConflictingAlignMaps
+
+" settings for vim-markdown-preview plugin
+let vim_markdown_preview_toggle=1
+let vim_markdown_preview_hotkey='<C-i>'
+let vim_markdown_preview_browser='Google Chrome'
+let vim_markdown_preview_temp_file=1
+let vim_markdown_preview_github=1
+
+" save with ;;
+nnoremap ;; :update<cr>
+inoremap ;; <Esc>:update<cr>gi
+
+" d is delete
+nnoremap x "_x
+nnoremap d "_d
+nnoremap D "_D
+vnoremap d "_d
+
+" Toggle indented paste
+set pastetoggle=<F3>
+
+" d is for delete and ,d is to cut
+" let mapleader = ','
+" nnoremap x "_x
+" nnoremap d "_d
+" nnoremap D "_D
+" vnoremap d "_d
+" nnoremap <leader>d ""d
+" nnoremap <leader>d ""d
+" vnoremap <leader>d ""d
+
